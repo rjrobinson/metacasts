@@ -8,6 +8,12 @@ func Greet(name string) {
 	fmt.Println("Hello, " + name)
 }
 
+func GreetNames(names []string, suffix string) {
+	for _, name := range names {
+		Greet(name + suffix)
+	}
+}
+
 func main() {
 	names := []string{
 		"Mark",
@@ -15,8 +21,13 @@ func main() {
 		"Ryan",
 		"Leo",
 	}
+	comm := make(chan string)
 
-	for _, name := range names {
-		Greet(name)
-	}
+	go func() {
+		GreetNames(names, " <C> ")
+		comm <- "finished greeting names concurrently..."
+	}()
+
+	GreetNames(names, " <M> ")
+	fmt.Println(<-comm)
 }
